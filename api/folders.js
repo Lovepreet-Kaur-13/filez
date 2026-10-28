@@ -20,3 +20,14 @@ router.param("id", async (req, res, next, id) => {
 router.get("/:id", (req, res) => {
   res.send(req.folder);
 });
+
+router.post("/:id/files", async (req, res) => {
+  if (!req.body) return res.status(400).send("Request body is required.");
+
+  const { name, size } = req.body;
+  if (!name || !size)
+    return res.status(400).send("Request body requires: name, size");
+
+  const file = await createFile(name, size, req.folder.id);
+  res.status(201).send(file);
+});
